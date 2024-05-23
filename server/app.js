@@ -9,7 +9,8 @@ require('dotenv').config();
 const { Puppy } = require('./db/models');
 
 // Import Op to perform comparison operations in WHERE clauses - DO NOT MODIFY
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
+const puppy = require('./db/models/puppy');
 
 // Express using json - DO NOT MODIFY
 app.use(express.json());
@@ -22,6 +23,9 @@ app.get('/puppies', async (req, res, next) => {
     let allPuppies;
 
     // Your code here
+    allPuppies = await Puppy.findAll({
+        attributes: ['name', 'ageYrs', 'breed', 'weightLbs', 'microchipped']
+    })
 
     res.json(allPuppies);
 });
@@ -34,6 +38,11 @@ app.get('/puppies/chipped', async (req, res, next) => {
     let chippedPuppies;
 
     // Your code here
+    chippedPuppies = await Puppy.findAll({
+        where: {
+            microchipped: true
+        }
+    })
 
     res.json(chippedPuppies);
 });
@@ -46,6 +55,12 @@ app.get('/puppies/name/:name', async (req, res, next) => {
     let puppyByName;
     
     // Your code here
+    const name = req.params.name
+    puppyByName = await Puppy.findAll({
+        where: {
+            name: name
+        }
+    })
 
     res.json(puppyByName);
 })
@@ -58,6 +73,13 @@ app.get('/puppies/shepherds', async (req, res, next) => {
     let shepherds;
     
     // Your code here
+    shepherds = await Puppy.findAll({
+        where: {
+            breed: {
+                [Op.endsWith]: 'shepherd'
+            }
+        }
+    })
 
     res.json(shepherds);
 })
